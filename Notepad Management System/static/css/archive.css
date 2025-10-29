@@ -1,0 +1,135 @@
+/* ARCHIVE PAGE STYLING */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Page Header */
+h2 {
+  text-align: center;
+  margin: 30px 0 10px 0;
+  color: #333;
+  font-weight: 700;
+}
+
+/* Notes Grid Layout */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 30px;
+  justify-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Note Card */
+.note-card {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  width: 90%;
+  min-height: 150px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  border-left: 6px solid #ffffff;
+}
+
+.note-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Note Title */
+.note-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #222;
+  font-weight: 600;
+}
+
+/* Note Content Preview */
+.note-card p {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Action Buttons */
+.note-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.note-actions form {
+  display: inline-block;
+  margin: 0;
+}
+
+/* General Button Style */
+.btn {
+  border: none;
+  outline: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: white;
+}
+
+/* Restore Button */
+.btn.restore {
+  background: #4caf50;
+}
+
+.btn.restore:hover {
+  background: #3d8c3d;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+/* Delete Button */
+.btn.delete {
+  background: #f44336;
+}
+
+.btn.delete:hover {
+  background: #d32f2f;
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+}
+
+/* Empty Archive Message */
+p {
+  text-align: center;
+  color: #777;
+  margin-top: 40px;
+  font-size: 15px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .notes-grid {
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

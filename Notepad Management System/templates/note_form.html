@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/note_form.css') }}">
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block content %}
+<div class="note-form-container">
+  <h2>{{ note and "Edit Note" or "New Note" }}</h2>
+
+  <form id="noteForm" method="post">
+    <label>Title*:</label>
+    <input 
+      type="text" 
+      name="title" 
+      id="title" 
+      value="{{ note.title if note }}" 
+      required
+    >
+
+    <label>Content:</label>
+    <textarea 
+      name="content" 
+      id="content" 
+      rows="8"
+    >{% if note %}{{ note.content }}{% endif %}</textarea>
+
+    <button type="submit">{{ note and "Save" or "Create" }}</button>
+  </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.getElementById("noteForm");
+  const titleInput = document.getElementById("title");
+  const contentInput = document.getElementById("content");
+
+  // Store original values (for edit mode)
+  const originalTitle = "{{ note.title if note else '' }}";
+  const originalContent = `{{ note.content|replace('\n', '\\n') if note else '' }}`;
+
+  form.addEventListener("submit", function(e) {
+    // Compare form data with original data (only for edit mode)
+    const isEditing = "{{ 'true' if note else 'false' }}" === "true";
+    if (isEditing) {
+      const currentTitle = titleInput.value.trim();
+      const currentContent = contentInput.value.trim();
+      
+      if (currentTitle === originalTitle.trim() && currentContent === originalContent.trim()) {
+        e.preventDefault();
+        Swal.fire({
+          icon: "info",
+          title: "No changes detected",
+          text: "You haven’t made any changes to your note.",
+          confirmButtonColor: "#6c63ff",
+        });
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

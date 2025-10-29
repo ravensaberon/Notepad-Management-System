@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "username": "hey123",
+      "email": "ven@gmail.com",
+      "password_hash": "scrypt:32768:8:1$xePXKQzOw1HRgK1f$60b0b3f4374d07f7b30412c645370f1d4f69c88323f79edc6d33a4416dfd86fb2dbd2020abc586f8d759b2a9026abc6c9c1e9a9199ebf779c45d1e83cc59a4fd",
+      "first_name": "esjkfek",
+      "middle_name": "ucheiu",
+      "last_name": "uegw",
+      "dob": "1999-12-09",
+      "age": 25,
+      "contact": "0987877767676787",
+      "address": "sihfeior",
+      "created_at": "2025-10-19T02:51:38.125301"
+    },
+    {
+      "username": "raventrbl",
+      "email": "jhonravensaberon@gmail.com",
+      "password_hash": "scrypt:32768:8:1$KkZyX6A2T2O9HtZs$c972a869421a7df2ae26b68bbd57614ee5b406d60f269992d7806403c44abd64ab9f0f709c20f33c1b323165cb70cc88d1e3bc8af75fcc773521728a787e5b72",
+      "first_name": "Jhon Raven",
+      "middle_name": "",
+      "last_name": "Saberon",
+      "dob": "2003-09-10",
+      "age": 22,
+      "contact": "09551781794",
+      "address": "Laguna",
+      "created_at": "2025-10-19T03:47:57.291830",
+      "profile_pic": "557455466_682823254372911_2846869712957950663_n.jpg"
+    },
+    {
+      "username": "niencie92",
+      "email": "awauwhdiaw@gmail.com",
+      "password_hash": "scrypt:32768:8:1$IYBguf07CPIyuawR$b662fc439544412bc356bc33357160c86d19c94f459654cd2cfc6ef140cea54e1d082017b2b5016911d724917af736347cac0137e355630bc4ab65834f5be638",
+      "first_name": "jkbkj",
+      "middle_name": "jkbbkj",
+      "last_name": "jj",
+      "dob": "1999-11-11",
+      "age": 25,
+      "contact": "09999999999",
+      "address": "",
+      "created_at": "2025-10-22T00:37:15.507057"
+    },
+    {
+      "username": "ven123",
+      "email": "jhonravensaberon@gmail.com",
+      "password_hash": "scrypt:32768:8:1$aZz04AJVid9kwWV8$026cbc1b85497016869b6795c81df42ffdb595db8d893c7383dc3f8990c732fc6dc982a429cd7e8f0adf811eeb41d1127cd5e46b5a13db84b6a3719f8d81ef47",
+      "first_name": "Jhon Raven",
+      "middle_name": "",
+      "last_name": "Saberon",
+      "dob": "1999-11-11",
+      "age": 25,
+      "contact": "09091119608",
+      "address": "",
+      "created_at": "2025-10-27T07:15:20.356677"
+    },
+    {
+      "username": "raven123",
+      "email": "jhonravensaberon@gmail.com",
+      "password_hash": "scrypt:32768:8:1$2U6mwPbtCeXybMSx$d6fb322a4544a075c68837169ff76191097dcd0b610353fecbf6154ae34a4b46b6ae1aa1cc5eabdac7fc45f605df3e3fad522a303576de3f7bec25fb15002562",
+      "first_name": "Jhon Raven",
+      "middle_name": "",
+      "last_name": "Saberon",
+      "dob": "1999-11-11",
+      "age": 25,
+      "contact": "+639091119608",
+      "address": "Blk 5 Lot 6, Brgy. San Isidro, Calamba City, Laguna, 4027",
+      "created_at": "2025-10-27T07:45:12.374891"
+    },
+    {
+      "username": "ven127",
+      "email": "jhonravensaberon@gmail.com",
+      "password_hash": "scrypt:32768:8:1$3YV0lI1TKCyYCZ1v$39703352758f8d67e7abe3fb143a7a6608ba82430409fab0fcd21161fb249e5f3e281beb0bbb08e7b813fdca7fb1cd1b0ef0444428c7df3617e9efba6ccbc11c",
+      "first_name": "Jhon Raven",
+      "middle_name": "",
+      "last_name": "Saberon",
+      "dob": "2003-09-10",
+      "age": 22,
+      "contact": "+639091119608",
+      "address": "02-062 Sitio Bagong Lipunan, Brgy. Duhat, Santa Cruz, Laguna, 4009",
+      "created_at": "2025-10-28T09:13:44.224533",
+      "profile_pic": "Screenshot_2025-10-27_104849.png"
+    }
+  ]
+}

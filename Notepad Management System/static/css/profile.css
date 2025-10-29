@@ -1,0 +1,106 @@
+/* ===== PROFILE PAGE STYLES ===== */
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f9fafc;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Main container */
+.profile-container {
+  max-width: 600px;
+  background: #fff;
+  margin: 80px auto;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.profile-container:hover {
+  transform: translateY(-2px);
+}
+
+/* Heading */
+.profile-container h2 {
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-size: 26px;
+  color: #2b2b2b;
+}
+
+/* Profile image section */
+.profile-image-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.profile-image {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Details section */
+.profile-details {
+  text-align: left;
+  margin-top: 20px;
+  line-height: 1.7;
+}
+
+.profile-details p {
+  font-size: 16px;
+  margin: 8px 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+.profile-details strong {
+  color: #444;
+}
+
+/* Button styles */
+.button-group {
+  margin-top: 35px;
+  text-align: center;
+}
+
+.edit-btn {
+  display: inline-block;
+  background: #4c82fb;
+  color: white;
+  text-decoration: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.edit-btn:hover {
+  background: #3a6ce0;
+  transform: translateY(-2px);
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 30px 25px;
+  }
+
+  .profile-details p {
+    font-size: 15px;
+  }
+
+  .profile-image {
+    width: 110px;
+    height: 110px;
+  }
+}

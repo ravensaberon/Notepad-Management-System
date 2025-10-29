@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/archive.css') }}">
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Archive</h2>
+
+{% if notes %}
+<div class="notes-grid">
+  {% for n in notes %}
+    <div class="note-card">
+      <h3>{{ n.title }}</h3>
+      <p>{{ n.content[:120] }}{% if n.content|length > 120 %}...{% endif %}</p>
+
+      <div class="note-actions">
+        <!-- Restore confirmation -->
+        <form class="restore-form" 
+              action="{{ url_for('main.restore_note', note_id=n.id) }}" 
+              method="post" 
+              style="display:inline">
+          <button class="btn small restore" type="submit">Restore</button>
+        </form>
+
+        <!-- Delete confirmation -->
+        <form class="delete-form" 
+              action="{{ url_for('main.permanent_delete', note_id=n.id) }}" 
+              method="post" 
+              style="display:inline">
+          <button class="btn small delete" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+  <p>Archive is empty.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // SweetAlert for restoring notes
+    document.querySelectorAll('.restore-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Restore this note?',
+          text: "It will be moved back to your active notes.",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#aaa',
+          confirmButtonText: 'Yes, restore it',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
+      });
+    });
+
+    // SweetAlert for permanent deletion
+    document.querySelectorAll('.delete-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Permanently delete this note?',
+          text: "This action cannot be undone!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}

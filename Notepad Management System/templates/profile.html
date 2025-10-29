@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+
+  <h2>My Profile</h2>
+
+  <!-- PROFILE IMAGE -->
+  <div class="profile-image-section">
+    <img src="{{ url_for('static', filename='uploads/' + (user.profile_pic if user.profile_pic else 'default.png')) }}" 
+         alt="Profile Picture" class="profile-image">
+  </div>
+
+  <!-- USER INFORMATION -->
+  <div class="profile-details">
+    <p><strong>Full Name:</strong>
+  {{ user.first_name }}
+  {% if user.middle_name %} {{ user.middle_name }}{% endif %}
+  {{ user.last_name }}
+</p>
+    <p><strong>Date of Birth:</strong> {{ user.dob }}</p>
+    <p><strong>Age:</strong> {{ user.age }}</p>
+    <p><strong>Contact:</strong> {{ user.contact }}</p>
+    <p><strong>Address:</strong> {{ user.address }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+  </div>
+
+  <!-- EDIT BUTTON -->
+  <div class="button-group">
+    <a href="{{ url_for('main.edit_profile') }}" class="edit-btn">Edit Profile</a>
+  </div>
+</div>
+
+{% endblock %}

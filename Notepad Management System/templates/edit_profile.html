@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_profile.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="container profile-container">
+  <h2>Edit Profile</h2>
+
+  <!-- PROFILE IMAGE UPLOAD -->
+  <div class="profile-image-section">
+    <div class="image-wrapper">
+      <img id="profilePreview"
+           src="{{ url_for('static', filename='uploads/' + (user.profile_pic if user.profile_pic else 'default.png')) }}"
+           alt="Profile Picture">
+
+      <form method="POST" enctype="multipart/form-data" class="upload-form">
+        <input type="hidden" name="action" value="upload_pic">
+        
+        <!-- Hidden file input -->
+        <input type="file" name="profile_pic" id="profile_pic" accept="image/*" required style="display:none;">
+        
+        <!-- Clickable label that opens the file picker -->
+        <label for="profile_pic" class="upload-btn">Choose Picture</label>
+        
+        <!-- Submit button appears after selecting a file -->
+        <button type="submit" class="upload-btn" id="uploadSubmitBtn" style="display:none;">Upload</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT FORM with Validation -->
+  <form method="post" id="editProfileForm" enctype="multipart/form-data" novalidate>
+    <div class="form-group">
+      <label>First Name*</label>
+      <input type="text" name="first_name" value="{{ user.first_name }}" required>
+      <small class="error"></small>
+    </div>
+
+    <div class="form-group">
+      <label>Middle Name</label>
+      <input type="text" name="middle_name" value="{{ user.middle_name }}">
+      <small class="error"></small>
+    </div>
+
+    <div class="form-group">
+      <label>Last Name*</label>
+      <input type="text" name="last_name" value="{{ user.last_name }}" required>
+      <small class="error"></small>
+    </div>
+
+    <div class="form-group">
+      <label>Date of Birth*</label>
+      <input type="date" name="dob" value="{{ user.dob }}" required>
+      <small class="error"></small>
+    </div>
+
+    <div class="form-group">
+      <label>Contact Number*</label>
+      <input type="text" name="contact" value="{{ user.contact }}" placeholder="09xxxxxxxxx or +639xxxxxxxxx" maxlength="13" required oninput="this.value = this.value.replace(/[^0-9+]/g, '').slice(0, 13)">
+      <small class="error"></small>
+    </div>
+
+    <div class="form-group">
+      <label>Address*</label>
+      <input type="text" name="address" value="{{ user.address }}" required>
+      <small class="error"></small>
+    </div>
+
+    <div class="form-group">
+      <label>Email*</label>
+      <input type="email" name="email" value="{{ user.email }}" required>
+      <small class="error"></small>
+    </div>
+
+    <div class="button-group">
+      <button id="requestOtpBtn" name="action" value="request_otp" type="submit" class="request-btn">Request OTP</button>
+      <button name="action" value="update_profile" type="submit" class="update-btn">Update (Requires OTP)</button>
+    </div>
+  </form>
+
+  <!-- OTP SECTION -->
+  <div class="otp-section">
+  <h3>Verify OTP</h3>
+
+  <!-- Countdown Display - ABOVE input field -->
+  <p id="countdown" class="countdown-timer" data-expiry="{{ otp_expiry if otp_expiry else '' }}"></p>
+
+  <form method="post" id="otpForm" class="otp-form">
+    <input type="hidden" name="action" value="verify_otp">
+
+    <div class="otp-input-row">
+      <label for="otp">OTP Code</label>
+      <input type="text" id="otp" name="otp" maxlength="6" required>
+      <button type="submit" class="verify-btn">Verify</button>
+    </div>
+  </form>
+</div>
+
+<!-- Profile Picture Preview Script -->
+<script>
+  const fileInput = document.getElementById('profile_pic');
+  const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
+  const preview = document.getElementById('profilePreview');
+
+  fileInput.addEventListener('change', function() {
+    const file = this.files[0];
+
+    if (!file) {
+      uploadSubmitBtn.style.display = 'none';
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert("Only image files are allowed (jpg, jpeg, png, gif).");
+      this.value = ''; // Clear invalid file
+      uploadSubmitBtn.style.display = 'none';
+      return;
+    }
+
+    // Show preview and upload button
+    preview.src = URL.createObjectURL(file);
+    uploadSubmitBtn.style.display = 'inline-block';
+  });
+</script>
+
+<!-- OTP Countdown with localStorage Persistence -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const countdownEl = document.getElementById('countdown');
+    const requestOtpBtn = document.getElementById('requestOtpBtn');
+    const STORAGE_KEY = 'profile_otp_expiry';
+    let timer = null;
+
+    if (!countdownEl) return;
+
+    // Function to format time remaining
+    function formatTime(ms) {
+      const totalSec = Math.max(0, Math.floor(ms / 1000));
+      const minutes = Math.floor(totalSec / 60);
+      const seconds = totalSec % 60;
+      return minutes + ':' + String(seconds).padStart(2, '0');
+    }
+
+    // Function to clear OTP state
+    function clearOtpState() {
+      localStorage.removeItem(STORAGE_KEY);
+      countdownEl.style.display = 'none';
+      if (requestOtpBtn) {
+        requestOtpBtn.disabled = false;
+        requestOtpBtn.textContent = 'Request OTP';
+      }
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    // Function to update countdown display
+    function updateCountdown(expiryMs) {
+      const now = Date.now();
+      const remaining = expiryMs - now;
+
+      if (remaining <= 0) {
+        countdownEl.textContent = "OTP expired. Please request a new one.";
+        countdownEl.classList.add('expired');
+        clearOtpState();
+        return;
+      }
+
+      countdownEl.style.display = 'block';
+      countdownEl.classList.remove('expired');
+      countdownEl.textContent = 'OTP expires in ' + formatTime(remaining);
+      
+      // Disable request button while countdown is active
+      if (requestOtpBtn) {
+        requestOtpBtn.disabled = true;
+        requestOtpBtn.textContent = 'OTP Already Sent';
+      }
+    }
+
+    // Function to start countdown
+    function startCountdown(expiryTimestamp) {
+      const expiryMs = expiryTimestamp * 1000; // Convert to milliseconds
+      
+      // Save to localStorage
+      localStorage.setItem(STORAGE_KEY, expiryTimestamp.toString());
+
+      // Clear any existing timer
+      if (timer) clearInterval(timer);
+
+      // Update immediately
+      updateCountdown(expiryMs);
+
+      // Update every second
+      timer = setInterval(function() {
+        updateCountdown(expiryMs);
+      }, 1000);
+    }
+
+    // Check for server-provided expiry (when OTP is just requested)
+    const serverExpiry = countdownEl.dataset.expiry;
+    if (serverExpiry && serverExpiry.trim() !== '') {
+      const expiryTimestamp = parseFloat(serverExpiry);
+      if (!isNaN(expiryTimestamp)) {
+        startCountdown(expiryTimestamp);
+      }
+    } else {
+      // Check localStorage for existing OTP countdown
+      const storedExpiry = localStorage.getItem(STORAGE_KEY);
+      if (storedExpiry) {
+        const expiryTimestamp = parseFloat(storedExpiry);
+        const now = Date.now();
+        const expiryMs = expiryTimestamp * 1000;
+
+        // Check if OTP is still valid
+        if (expiryMs > now) {
+          // Restore countdown
+          startCountdown(expiryTimestamp);
+        } else {
+          // Expired, clear it
+          clearOtpState();
+        }
+      } else {
+        // No active OTP
+        countdownEl.style.display = 'none';
+      }
+    }
+
+    // Clear OTP state when profile is successfully updated
+    // Listen for success flash messages
+    const flashes = document.querySelectorAll('.flashes .success');
+    flashes.forEach(function(flash) {
+      if (flash.textContent.includes('Profile updated')) {
+        clearOtpState();
+      }
+    });
+
+    // Also clear when requesting new OTP
+    if (requestOtpBtn) {
+      requestOtpBtn.addEventListener('click', function() {
+        // Will be cleared and reset when page reloads with new expiry
+        localStorage.removeItem(STORAGE_KEY);
+      });
+    }
+  });
+</script>
+
+<!-- Validation Script - Reuse from form_validation.js -->
+<script>
+  // Shared validation functions
+  function showError(input, message) {
+    const errorEl = input.parentElement.querySelector(".error");
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    input.classList.toggle("invalid", !!message);
+  }
+
+  function clearErrors(form) {
+    form.querySelectorAll(".error").forEach(e => (e.textContent = ""));
+    form.querySelectorAll(".invalid").forEach(i => i.classList.remove("invalid"));
+  }
+
+  function validateEditProfile(form, singleField = null) {
+    let valid = true;
+
+    // Patterns (same as register)
+    const namePattern = /^[A-Za-z\s]{2,50}$/;
+    const emailPattern = /^[a-z0-9._%+-]+@(gmail|yahoo|icloud|hotmail)\.[a-z]{2,}$/;
+    const contactPattern = /^(?:\+639|09)\d{9}$/;
+
+    const fields = {
+      first_name: "First name",
+      last_name: "Last name",
+      dob: "Date of Birth",
+      email: "Email",
+      contact: "Contact",
+      address: "Address"
+    };
+
+    const inputs = singleField ? [singleField] : form.querySelectorAll("input");
+
+    inputs.forEach(input => {
+      const name = input.name;
+      const value = input.value.trim();
+      showError(input, "");
+
+      // Required check
+      if (fields[name] && !value) {
+        showError(input, `${fields[name]} is required.`);
+        valid = false;
+      }
+
+      // Name check
+      if (["first_name", "middle_name", "last_name"].includes(name) && value && !namePattern.test(value)) {
+        showError(input, "Only letters and spaces (2–50 chars).");
+        valid = false;
+      }
+
+      // Email validation
+      if (name === "email" && value && !emailPattern.test(value)) {
+        showError(input, "Use a valid Gmail/Yahoo/iCloud/Hotmail email (lowercase only).");
+        valid = false;
+      }
+
+      // Contact validation (PH format)
+      if (name === "contact" && value) {
+        const digitsOnly = value.replace(/\D/g, "");
+        const startsWithValidPrefix = /^(\+639|09)/.test(value);
+
+        if (digitsOnly.length === 11) {
+          if (!startsWithValidPrefix) {
+            showError(input, "Use valid PH number: must start with +639 or 09.");
+            valid = false;
+          } else if (/^(\d)\1{10}$/.test(digitsOnly)) {
+            showError(input, "Invalid contact number — repeated digits not allowed.");
+            valid = false;
+          } else if (/(\d)\1{5,}/.test(digitsOnly)) {
+            showError(input, "Invalid contact number — too many repeated digits.");
+            valid = false;
+          } else if (/^(\+?639|09)0{8}$/.test(value)) {
+            showError(input, "Invalid contact number — zeros not allowed.");
+            valid = false;
+          } else {
+            showError(input, "");
+          }
+        } else if (digitsOnly.length > 0 && digitsOnly.length < 11) {
+          showError(input, "");
+        } else if (digitsOnly.length === 0) {
+          showError(input, "Contact is required.");
+          valid = false;
+        }
+      }
+    });
+
+    return valid;
+  }
+
+  // Live inline validation
+  document.addEventListener("input", e => {
+    if (!e.target.form || e.target.form.id !== "editProfileForm") return;
+    validateEditProfile(e.target.form, e.target);
+  });
+
+  // Final submission check - only validate on update_profile action
+  document.addEventListener("submit", e => {
+    if (e.target.id === "editProfileForm") {
+      // Get the clicked button
+      const submitter = e.submitter;
+      
+      // Only validate if updating profile, not when requesting OTP
+      if (submitter && submitter.value === "update_profile") {
+        if (!validateEditProfile(e.target)) {
+          e.preventDefault();
+        }
+      }
+    }
+  });
+</script>
+
+<style>
+/* Validation styles */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group input.invalid {
+  border-color: #dc3545;
+}
+
+.form-group .error {
+  display: block;
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  min-height: 1.2em;
+}
+
+/* Countdown styles */
+.countdown-timer { 
+  font-weight: 600; 
+  margin-top: 10px; 
+  display: none;
+}
+
+.countdown-timer.expired { 
+  color: red; 
+}
+
+.request-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+</style>
+
+{% endblock %}
